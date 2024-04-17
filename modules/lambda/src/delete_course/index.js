@@ -6,9 +6,14 @@ const dynamodb = new AWS.DynamoDB({
 
 exports.handler = (event, context, callback) => {
   const params = {
-    TableName: process.env.TABLE_NAME
+    Key: {
+      id: {
+        S: event.id,
+      },
+    },
+    TableName: process.env.TABLE_NAME,
   };
-  dynamodb.scan(params, (err, data) => {
+  dynamodb.deleteItem(params, (err, data) => {
     if (err) {
       console.log(err);
       callback(err);
