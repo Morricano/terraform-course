@@ -50,9 +50,9 @@ module "label_create_item" {
 
 
 module "lambda_function" {
-  source  = "terraform-aws-modules/lambda/aws"
-  version = "7.2.3"
-
+  source        = "terraform-aws-modules/lambda/aws"
+  version       = "7.2.3"
+  publish       = true
   function_name = module.label_get_all_authors.id
   description   = "Get all authors"
   handler       = "index.handler"
@@ -67,12 +67,20 @@ module "lambda_function" {
     TABLE_NAME = var.table_authors_name
   }
 
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
+    }
+  }
+
   tags = module.label_get_all_authors.tags
 }
 
 module "lambda_get_all_courses" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "7.2.3"
+  publish = true
 
   function_name = module.label_get_all_courses.id
   description   = "Getting all courses"
@@ -86,6 +94,12 @@ module "lambda_get_all_courses" {
 
   environment_variables = {
     TABLE_NAME = var.table_courses_name
+  }
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "${var.aws_api_gateway_rest_api_execution_arn}/*/*/*"
+    }
   }
 
   tags = module.label_get_all_courses.tags

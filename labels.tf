@@ -29,3 +29,15 @@ module "label_s3" {
   }
 }
 
+module "label_api" {
+  source = "cloudposse/label/null"
+  #   version = "0.25.0"
+
+  context = module.label.context
+
+  name = "api"
+
+  tags = {
+    Name = local.tag_name
+  }
+}

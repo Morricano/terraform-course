@@ -25,6 +25,7 @@ module "lambdas" {
   role_save_course_arn     = module.iam.role_save_course_arn
   role_update_course_arn   = module.iam.role_save_course_arn
   role_delete_course_arn   = module.iam.role_delete_course_arn
+  aws_api_gateway_rest_api_execution_arn = aws_api_gateway_rest_api.this.execution_arn
 }
 
 module "iam" {
