@@ -31,7 +31,71 @@ resource "aws_api_gateway_request_validator" "this" {
   validate_request_body = true
 }
 
+resource "aws_api_gateway_model" "course_put_model" {
+  rest_api_id  = aws_api_gateway_rest_api.this.id
+  name         = replace("${module.label_api.id}-PutCourse", "-", "")
+  description  = "a JSON schema"
+  content_type = "application/json"
 
+  schema = <<EOF
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "CourseInputModel",
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"},
+    "title": {"type": "string"},
+    "authorId": {"type": "string"},
+	 "length": {"type": "string"},
+    "category": {"type": "string"},
+	 "watchHref": {"type": "string"}
+  },
+  "required": ["id"]
+}
+EOF
+}
+
+resource "aws_api_gateway_model" "course_post_model" {
+  rest_api_id  = aws_api_gateway_rest_api.this.id
+  name         = replace("${module.label_api.id}-PostCourse", "-", "")
+  description  = "a JSON schema"
+  content_type = "application/json"
+
+  schema = <<EOF
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "CourseInputModel",
+  "type": "object",
+  "properties": {
+    "title": {"type": "string"},
+    "authorId": {"type": "string"},
+	 "length": {"type": "string"},
+    "category": {"type": "string"},
+	 "watchHref": {"type": "string"}
+  },
+  "required": ["title", "authorId", "length", "category"]
+}
+EOF
+}
+
+resource "aws_api_gateway_model" "course_delete_model" {
+  rest_api_id  = aws_api_gateway_rest_api.this.id
+  name         = replace("${module.label_api.id}-DeleteCourse", "-", "")
+  description  = "a JSON schema"
+  content_type = "application/json"
+
+  schema = <<EOF
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "CourseInputModel",
+  "type": "object",
+  "properties": {
+    "id": {"type": "string"}
+  },
+  "required": ["id"]
+}
+EOF
+}
 
 
 # #####################
@@ -144,6 +208,13 @@ resource "aws_api_gateway_integration" "save_course" {
   type                    = "AWS"
   uri                     = module.lambdas.lambda_save_course_invoke_arn
   request_parameters      = { "integration.request.header.X-Authorization" = "'static'" }
+  request_templates = {
+    "application/xml" = <<EOF
+  {
+     "body" : $input.json('$')
+  }
+  EOF
+  }
   content_handling = "CONVERT_TO_TEXT"
 }
 
@@ -155,6 +226,18 @@ resource "aws_api_gateway_integration" "update_course" {
   type                    = "AWS"
   uri                     = module.lambdas.lambda_update_course_invoke_arn
   request_parameters      = { "integration.request.header.X-Authorization" = "'static'" }
+  request_templates = {
+    "application/json" = <<EOF
+    {
+       "id": "$input.params('id')",
+       "title": "$input.path('$.title')",
+       "authorId": "$input.path('$.authorId')",
+		 "length": "$input.path('$.length')",
+       "category": "$input.path('$.category')",
+		 "watchHref": "$input.path('$.watchHref')"
+    }
+EOF
+  }
   content_handling = "CONVERT_TO_TEXT"
 }
 
