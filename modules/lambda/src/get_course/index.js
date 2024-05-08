@@ -18,6 +18,13 @@ exports.handler = (event, context, callback) => {
       console.log(err);
       callback(err);
     } else {
+      // Check if item exists
+      if (!data.Item) {
+        callback(null, { error: "Item not found" });
+        return;
+      }
+
+      // Return item details
       callback(null, {
         id: data.Item.id.S,
         title: data.Item.title.S,

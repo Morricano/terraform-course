@@ -41,3 +41,17 @@ module "label_api" {
     Name = local.tag_name
   }
 }
+
+module "label_front_app" {
+  source = "cloudposse/label/null"
+  #   version = "0.25.0"
+
+  context = module.label.context
+
+  name = "front-app"
+
+  tags = {
+    Name = local.tag_name
+  }
+}
+

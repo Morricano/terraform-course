@@ -103,7 +103,6 @@ data "aws_iam_policy_document" "get_course" {
   statement {
     actions = [
       "dynamodb:GetItem",
-      "dynamodb:Scan",
     ]
     resources = [var.table_courses_arn]
   }
