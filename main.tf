@@ -46,9 +46,9 @@ module "cloudwatch" {
   context = module.label.context
 }
 
-resource "aws_s3_bucket" "example" {
-  #   bucket = "891377012449-my-tf-test-bucket"
-  bucket = module.label_s3.id
+# resource "aws_s3_bucket" "example" {
+#   #   bucket = "891377012449-my-tf-test-bucket"
+#   bucket = module.label_s3.id
 
-  tags = module.label_s3.tags
-}
+#   tags = module.label_s3.tags
+# }

@@ -112,7 +112,7 @@ module "lambda_get_course" {
 
   lambda_role = var.role_get_course_arn
 
-  source_path = "${path.module}/src/get_all_courses"
+  source_path = "${path.module}/src/get_course"
 
   environment_variables = {
     TABLE_NAME = var.table_courses_name
